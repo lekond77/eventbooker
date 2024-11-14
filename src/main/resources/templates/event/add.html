@@ -12,7 +12,14 @@
 
 <body>
 
-	<form method="post" th:action="@{/admin/events/save}" th:object="${event}">
+	<div th:if="${success != null}" class="mt-4 alert alert-success">
+		<span th:text="${success}"></span>
+	</div>
+	
+	<div th:if="${error != null}" class="mt-4 alert alert-danger">
+		 <span th:text="${error}"></span> 
+	 </div>
+	<form method="post" th:action="@{/admin/events/new}" th:object="${event}">
 		<div class="form-group">
 			<label for="title">Titre</label>
 			<input type="text" th:field="*{title}" class="form-control" id="title">

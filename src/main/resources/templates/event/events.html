@@ -21,7 +21,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr class="text-center" th:text="${event == null or event.empty}">
+			<tr class="text-center" th:text="${events == null or events.empty}">
 				<td colspan="4">Aucun évènement enregistré</td>
 			</tr>
 
@@ -32,10 +32,10 @@
 					Description</td>
 				<td th:text="${event.date}">date</td>
 				<td class="d-flex justify-content-around">
-					<a href="" class="btn btn-primary btn-sm me-1" title="Editer">
+					<a th:href="@{/admin/events/edit/{id}(id=${event.id})}" class="btn btn-primary btn-sm me-1" title="Editer">
 						<i class="bi bi-pencil-square"></i>
 					</a>
-					<a href="" onclick="return confirm('Confirmer');" class="btn btn-danger btn-sm" title="Supprimer">
+					<a th:href="@{/admin/events/delete/{id}(id=${event.id})}" onclick="return confirm('Confirmer');" class="btn btn-danger btn-sm" title="Supprimer">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 							class="bi bi-archive" viewBox="0 0 16 16">
 							<path
