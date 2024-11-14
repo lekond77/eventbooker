@@ -18,7 +18,7 @@ public class Event {
 	private Long id;
 	
 	@Column
-	private String name;
+	private String title;
 
 	@Column
 	private String description;
@@ -28,5 +28,42 @@ public class Event {
 	
 	@Column
 	private String imageUrl;
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public Long getId() {
+		
+		return id;
+	}
 	
 }
