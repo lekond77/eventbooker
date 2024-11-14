@@ -15,7 +15,7 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		response.sendRedirect("/admin/events");
+			response.sendRedirect("/admin/events");
 		
 	}
 
