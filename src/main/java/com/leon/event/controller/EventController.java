@@ -24,7 +24,7 @@ public class EventController {
 		return "home";
 	}
 
-	@GetMapping("admin/events/new")
+	@GetMapping("/admin/events/new")
 	public String createEvent(Model model) {
 		
 		model.addAttribute("event", new Event());
