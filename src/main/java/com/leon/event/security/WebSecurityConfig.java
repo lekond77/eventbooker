@@ -1,5 +1,6 @@
 package com.leon.event.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -11,9 +12,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.leon.event.config.AuthenticationFailureHandler;
+import com.leon.event.config.AuthenticationSuccessHandler;
+
 @Configuration
 public class WebSecurityConfig {
 
+	@Autowired 
+	private AuthenticationFailureHandler failureHandler;
+	@Autowired 
+	private AuthenticationSuccessHandler successHandler;
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
@@ -21,9 +30,14 @@ public class WebSecurityConfig {
         	.csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
-            		.requestMatchers("/login/admin", "/").permitAll()
+            		.requestMatchers("/").permitAll()
             		.anyRequest().authenticated())
-            .httpBasic(Customizer.withDefaults());
+            .httpBasic(Customizer.withDefaults())
+            .formLogin(form -> form
+            		.loginPage("/admin/login").permitAll()
+            		.successHandler(successHandler)
+            		.failureHandler(failureHandler))
+     ;
         
 		return http.build();
 		
