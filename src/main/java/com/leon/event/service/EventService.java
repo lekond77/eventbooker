@@ -75,7 +75,8 @@ public class EventService {
 
 	private boolean isValidEvent(Event event) {
 
-		return (event.getTitle() != null && event.getDescription() != null && event.getImageUrl() != null);
+		return (event.getTitle() != null && event.getDescription() != null && event.getImageUrl() != null
+				&& !event.getTitle().isEmpty() && !event.getDescription().isEmpty() && !event.getImageUrl().isEmpty());
 	}
 
 }
