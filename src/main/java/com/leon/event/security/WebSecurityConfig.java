@@ -37,7 +37,9 @@ public class WebSecurityConfig {
             		.loginPage("/admin/login").permitAll()
             		.successHandler(successHandler)
             		.failureHandler(failureHandler))
-     ;
+            .logout(logout -> logout
+            		.invalidateHttpSession(true)
+            		.logoutSuccessUrl("/"));
         
 		return http.build();
 		
