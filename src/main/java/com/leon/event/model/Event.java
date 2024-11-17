@@ -10,20 +10,31 @@ import jakarta.persistence.Id;
 public class Event {
 
 	@Id
-	@GeneratedValue(strategy =  GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column
 	private String title;
 
 	@Column
 	private String description;
-	
+
 	@Column
 	private String date;
-	
+
 	@Column
 	private String imageUrl;
+
+	public Event() {
+		
+	}
+	public Event(String title, String description, String date, String imageUrl) {
+
+		this.title = title;
+		this.description = description;
+		this.date = date;
+		this.imageUrl = imageUrl;
+	}
 
 	public void setTitle(String title) {
 		this.title = title;
@@ -58,13 +69,13 @@ public class Event {
 	}
 
 	public Long getId() {
-		
+
 		return id;
 	}
-	
+
 	public void setId(Long id) {
-		
-		this.id =  id;
+
+		this.id = id;
 	}
-	
+
 }

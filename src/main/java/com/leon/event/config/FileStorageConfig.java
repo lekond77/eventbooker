@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FileStorageConfig {
 
-	private String location = "dir";
+	private String location = "src/main/resources/static/events";
 
 	public String getLocation() {
 		return location;

@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,22 +30,30 @@ public class FileService {
 		this.rootLocation = Paths.get(properties.getLocation());
 	}
 
-	public void storeFile(MultipartFile file) {
+	public String storeFile(MultipartFile file) {
 		try {
+
 			if (file.isEmpty()) {
-				throw new StorageException("Failed to store empty file.");
+				return "";
 			}
-			Path destinationFile = this.rootLocation.resolve(Paths.get(file.getOriginalFilename())).normalize()
-					.toAbsolutePath();
+
+			String originalFileName = file.getOriginalFilename();
+			String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+			String uniqueFileName = UUID.randomUUID().toString() + extension;
+
+			Path destinationFile = this.rootLocation.resolve(Paths.get(uniqueFileName)).normalize().toAbsolutePath();
+
 			if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
-				// This is a security check
-				throw new StorageException("Cannot store file outside current directory.");
+
+				return "";
 			}
 			try (InputStream inputStream = file.getInputStream()) {
 				Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
 			}
+
+			return uniqueFileName;
 		} catch (IOException e) {
-			throw new StorageException("Failed to store file.", e);
+			return "";
 		}
 	}
 

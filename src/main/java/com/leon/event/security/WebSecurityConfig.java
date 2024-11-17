@@ -31,6 +31,7 @@ public class WebSecurityConfig {
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
             		.requestMatchers("/").permitAll()
+            		.requestMatchers("/view").permitAll()
             		.anyRequest().authenticated())
             .httpBasic(Customizer.withDefaults())
             .formLogin(form -> form

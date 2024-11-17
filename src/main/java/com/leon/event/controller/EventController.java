@@ -23,30 +23,22 @@ public class EventController {
 
 	@Autowired
 	private EventService eventService;
-	
-	@Autowired 
-	private FileService fileService;
-	
 
 	@Autowired
-	public EventController(FileService fileService) {
-		this.fileService = fileService;
-	}
+	private FileService fileService;
 
-	
 	private void events(Model model) {
 		Iterable<Event> events = eventService.getEvents();
 
 		model.addAttribute("events", events);
 	}
-	
+
 	@GetMapping("/")
 	public String home(Model model) {
 		events(model);
 		return "home";
 	}
 
-	
 	@GetMapping("/admin/events")
 	public String getEvents(Model model) {
 
@@ -76,32 +68,51 @@ public class EventController {
 	}
 
 	@PostMapping("/admin/events/new")
-	public ModelAndView createEvent(@ModelAttribute Event event, RedirectAttributes redirectAttribute, Model model, @RequestParam MultipartFile imageUrl) {
+	public ModelAndView createEvent(@RequestParam String title, @RequestParam String description,
+			@RequestParam String date, @RequestParam MultipartFile imageUrl, RedirectAttributes redirectAttribute,
+			Model model) {
 
-		//System.out.println(imageUrl);
-		
-		fileService.storeFile(imageUrl);
-		
-		
-		Event createdEvent = eventService.createEvent(event);
-		
-	
-		if (createdEvent != null) {
+		Event newEvent = new Event(title, description, date, imageUrl.getOriginalFilename());
 
-			redirectAttribute.addFlashAttribute("success", "L'évènement ajouté avec succès");
-			return new ModelAndView("redirect:new");
-		} else {
-			model.addAttribute("error", "Une erreur s'est produite lors de l'ajout");
+		if (eventService.isValidEvent(newEvent)) {
+
+			String fileName = fileService.storeFile(imageUrl);
+
+			if (!fileName.isEmpty()) {
+
+				newEvent.setImageUrl(fileName);
+
+				eventService.createEvent(newEvent);
+
+				redirectAttribute.addFlashAttribute("success", "L'évènement ajouté avec succès");
+
+				return new ModelAndView("redirect:new");
+			}
 		}
+
+		model.addAttribute("event", newEvent);
+		model.addAttribute("error", "Une erreur s'est produite lors de l'ajout");
 
 		return new ModelAndView("event/add");
 	}
 
 	@PostMapping("/admin/events/update")
-	public String updateEvent(@ModelAttribute Event event, Model model) {
+	public String updateEvent(Model model,
+			@RequestParam String title, 
+			@RequestParam String description, 
+			@RequestParam String date,
+			@RequestParam Long id,
+			@RequestParam MultipartFile imageUrl) {
 
-		eventService.updateEvent(event);
-		
+		Event updatedEvent = new Event(title, description, date, imageUrl.getOriginalFilename());
+		updatedEvent.setId(id);
+
+		if(!imageUrl.isEmpty()) {
+			updatedEvent.setImageUrl(fileService.storeFile(imageUrl));
+		}
+
+		eventService.updateEvent(updatedEvent);
+
 		return "redirect:/admin/events";
 	}
 
@@ -114,5 +125,4 @@ public class EventController {
 
 		return "redirect:/admin/events";
 	}
-
 }
