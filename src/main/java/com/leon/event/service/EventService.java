@@ -21,10 +21,8 @@ public class EventService {
 
 	// Save Event and return it
 	public Event createEvent(Event event) {
-		if (isValidEvent(event)) {
-			return eventRepository.save(event);
-		}
-		return null;
+		return eventRepository.save(event);
+
 	}
 
 	// udapte Event
@@ -73,7 +71,7 @@ public class EventService {
 		eventRepository.deleteById(id);
 	}
 
-	private boolean isValidEvent(Event event) {
+	public boolean isValidEvent(Event event) {
 
 		return (event.getTitle() != null && event.getDescription() != null && event.getImageUrl() != null
 				&& !event.getTitle().isEmpty() && !event.getDescription().isEmpty() && !event.getImageUrl().isEmpty());

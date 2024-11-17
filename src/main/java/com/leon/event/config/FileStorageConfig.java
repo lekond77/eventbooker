@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FileStorageConfig {
 
-	private String location = "C:/Users/leo/Documents/workspace-spring-tool-suite-4-4.25.0.RELEASE/eventbooker/src/main/static";
+	private String location = "src/main/resources/static/events";
 
 	public String getLocation() {
 		return location;
