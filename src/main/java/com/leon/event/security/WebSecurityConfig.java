@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.leon.event.config.AuthenticationFailureHandler;
 import com.leon.event.config.AuthenticationSuccessHandler;
 
+
 @Configuration
 public class WebSecurityConfig {
 
@@ -31,7 +32,8 @@ public class WebSecurityConfig {
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
             		.requestMatchers("/").permitAll()
-            		.requestMatchers("/view").permitAll()
+            		.requestMatchers("/register").permitAll()
+            		.requestMatchers("/error").permitAll()
             		.anyRequest().authenticated())
             .httpBasic(Customizer.withDefaults())
             .formLogin(form -> form
@@ -39,8 +41,7 @@ public class WebSecurityConfig {
             		.successHandler(successHandler)
             		.failureHandler(failureHandler))
             .logout(logout -> logout
-            		.invalidateHttpSession(true)
-            		.logoutSuccessUrl("/"));
+            		.invalidateHttpSession(true));
         
 		return http.build();
 		
