@@ -34,8 +34,10 @@
 			<div class="card mb-3 mx-2 ps-0" style="max-width: 540px;" th:each="event: ${events}">
 				<div class="row g-0">
 					<div class="col-md-4 position-relative">
-						<img th:src="@{'/src/main/resources/static/events/' + ${event.imageUrl}}" class="img-fluid rounded- h-100" th:alt="${event.title}">
-						<span class="position-absolute top-0 start-0 "><small class="text-white bg-danger p-1" th:text="${event.date}"></small></span>
+						<img th:src="@{'/src/main/resources/static/events/' + ${event.imageUrl}}"
+							class="img-fluid rounded- h-100" th:alt="${event.title}">
+						<span class="position-absolute top-0 start-0 "><small class="text-white bg-danger p-1"
+								th:text="${event.date}"></small></span>
 					</div>
 					<div class="col-md-8">
 						<div class="card-body pt-0">
@@ -43,20 +45,135 @@
 							<p class="card-text" th:text="${event.description}"></p>
 						</div>
 						<div class="card-body w-100">
-							<a class="btn btn-info w-100">S'enregistrer</a>
+
+							<button class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+								type="button" th:data-id="${event.id}" th:data-title="${event.title}">
+								S'inscrire
+							</button>
 						</div>
-
 					</div>
-
 				</div>
 			</div>
 		</div>
 	</div>
 
+	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+		aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">Inscription à l'événement</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				
+				<div class="modal-body">
+					<div role="alert" id="registerFeedBackMessage"></div>
+					<form id="eventRegisterForm">
+						<div class="mb-3">
+							<label for="name" class="form-label">Nom</label>
+							<input type="text" class="form-control" id="name" placeholder="Entrez votre nom" required
+								name="name">
+						</div>
+						<div class="mb-3">
+							<label for="email" class="form-label">Email</label>
+							<input type="email" class="form-control" id="email" placeholder="Entrez votre email"
+								required name="email">
+						</div>
+						<input type="hidden" id="eventId" name="eventId">
+					</form>
+					
+					<div class="" id="registerFeedbackCode">
+						
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					<button type="button" class="btn btn-info" id="submitForm">S'inscrire</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"
 		defer>
-		</script>
+	</script>
+
+	<script>
+
+		document.addEventListener('DOMContentLoaded', function () {
+			
+			const registerFeedBackMessage = document.getElementById("registerFeedBackMessage");
+			const buttons = document.querySelectorAll('button[data-bs-toggle="modal"]');
+			const registerFeedbackCode = document.getElementById('registerFeedbackCode');
+
+			buttons.forEach(button => {
+				button.addEventListener('click', function () {
+
+					const eventId = button.getAttribute('data-id');
+					const eventTitle = button.getAttribute('data-title');
+
+					document.getElementById('eventId').value = eventId;
+					document.getElementById('staticBackdropLabel').innerText = `Inscription à l'événement: ${eventTitle}`;
+					
+					registerFeedBackMessage.innerHTML = "";
+					registerFeedBackMessage.classList = "";
+					registerFeedbackCode.innerHTML = "";
+				});
+			});
+
+
+			document.getElementById('submitForm').addEventListener('click', function () {
+				const form = document.getElementById('eventRegisterForm');
+				const name = document.getElementById('name').value;
+				const email = document.getElementById('email').value;
+				const eventId = document.getElementById('eventId').value;
+							
+				if (name && email) {
+					const data = {
+						name: name,
+						email: email,
+						eventId: eventId
+					};
+		
+					fetch('http://localhost:8087/register', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(data)
+					}).then(response => {
+						if (!response.ok) {
+							return response.json().then(errorData => {
+								throw new Error(errorData.message || "Erreur inconnue")
+							});
+						}
+
+						return response.json();
+					}).then(data => {
+						
+						const qrCode = document.createElement('img');
+						qrCode.setAttribute("src", "/src/main/resources/static/events/" + data.qrCode);
+
+						registerFeedBackMessage.classList.add("alert-success", "alert");
+						registerFeedBackMessage.innerHTML = data.message;
+						
+						registerFeedbackCode.appendChild(qrCode);
+
+					}).catch(error => {
+					
+						registerFeedBackMessage.classList.add("alert-danger", "alert");
+						registerFeedBackMessage.innerHTML = error;
+						return;
+					})
+				} else {
+					alert('Veuillez remplir tous les champs');
+				}
+			});
+		});
+	</script>
+
 </body>
 
 </html>
