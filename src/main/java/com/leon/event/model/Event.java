@@ -1,12 +1,18 @@
 package com.leon.event.model;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "events")
 public class Event {
 
 	@Id
@@ -24,6 +30,9 @@ public class Event {
 
 	@Column
 	private String imageUrl;
+	
+	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+	private List<AttendeeEvent> attendees;
 
 	public Event() {
 		
@@ -36,6 +45,7 @@ public class Event {
 		this.imageUrl = imageUrl;
 	}
 
+	
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -77,5 +87,13 @@ public class Event {
 
 		this.id = id;
 	}
+	
+	public List<AttendeeEvent> getAttendees() {
+        return attendees;
+    }
+
+    public void setAttendees(List<AttendeeEvent> attendees) {
+        this.attendees = attendees;
+    }
 
 }

@@ -3,6 +3,8 @@ package com.leon.event.service;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
@@ -26,35 +28,49 @@ public class QrCodeService {
 
 	@Autowired
 	private FileStorageConfig properties;
-	public String generateQRCode(String data) throws Exception {
-		
 
-		int size = 250; 
+	public String generateQRCode(String data, String id) throws Exception {
+
 		String fileType = "png";
 
 		QRCodeWriter qrCodeWriter = new QRCodeWriter();
 		Map<EncodeHintType, Object> hints = new HashMap<>();
 		hints.put(EncodeHintType.MARGIN, 1);
 
-		BitMatrix bitMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, 300, 300, hints);
-		BufferedImage image = new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB);
+		BitMatrix bitMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, 250, 250, hints);
+		BufferedImage image = new BufferedImage(250, 250, BufferedImage.TYPE_INT_RGB);
 		image.createGraphics();
-		
-		for (int x = 0; x < 300; x++) {
-			for (int y = 0; y < 300; y++) {
+
+		for (int x = 0; x < 250; x++) {
+			for (int y = 0; y < 250; y++) {
 				image.setRGB(x, y, bitMatrix.get(x, y) ? 0x000000 : 0xFFFFFF);
 			}
 		}
-		
+
 		String qrCodeFileName = UUID.randomUUID().toString() + ".png";
-		
-		String uploadDir = Paths.get(properties.getLocation()).toFile().getAbsolutePath();
-		
+
+
+		String uploadDir = getUploadDir(id);
+
 		File outputFile = new File(uploadDir, qrCodeFileName);
-        
-        ImageIO.write(image, fileType, outputFile);
-        
+
+		ImageIO.write(image, fileType, outputFile);
+
 		return qrCodeFileName;
+	}
+
+	private String getUploadDir(String subPath) throws IOException {
+
+		String baseDir = Paths.get(properties.getLocation(), subPath).toString();
+
+		Path path = Paths.get(baseDir);
+
+		if (!Files.exists(path)) {
+			Files.createDirectories(path);
+		}
+
+		return path.toAbsolutePath().toString();
+
 	}
 
 }

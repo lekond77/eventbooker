@@ -1,17 +1,18 @@
 package com.leon.event.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "attendees")
 public class Attendee {
 
 	@Id
@@ -24,8 +25,8 @@ public class Attendee {
 	@Column
 	private String email;
 
-	@ManyToMany(fetch = FetchType.LAZY)
-	private Set<Event> events = new HashSet<>();
+	@OneToMany(mappedBy= "attendee", cascade = CascadeType.ALL)
+	private List<AttendeeEvent> events;
 
 	public Attendee() {
 	}
@@ -59,13 +60,11 @@ public class Attendee {
 		this.email = email;
 	}
 
-	public Set<Event> getEvents() {
-		return events;
-	}
+	public List<AttendeeEvent> getEvents() {
+        return events;
+    }
 
-	public void setEvents(Event event) {
-		if(!this.events.contains(event)) {
-			this.events.add(event);
-		}
-	}
+    public void setEvents(List<AttendeeEvent> events) {
+        this.events = events;
+    }
 }
