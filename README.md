@@ -27,8 +27,11 @@ EventBooker is a web application developed using the Spring framework, designed 
 - **Home Page:** Visit the home page at / to view and register for events.
 
 ![Home Page screenshot](/github_image/home.png) *Description : Home Page screenshot.*
+
 ![Register for event screenshot](/github_image/register.png) *Description: Register for event screeshot.*
+
 ![Admin dashboard screenshot](/github_image/admin_dashboard.png)*Description: Admin dashboard screeshot.*
+
 
 # EventBooker
 
