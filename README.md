@@ -52,7 +52,7 @@ EventBooker est une application web développée avec le framework Spring, conç
 
 ## Cloner le dépôt :
    
-   git clone https://github.com/lekond77/eventbooker.git
+    git clone https://github.com/lekond77/eventbooker.git
 
 
 ## Utilisation
